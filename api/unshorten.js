@@ -278,6 +278,146 @@ function scanHtmlForFileLinks(html) {
     return [...foundUrls];
 }
 
+// ---- Deep Scan: Extract ALL URLs from HTML (including JSON data) ----
+function scanHtmlForAllUrls(html, sourceHostname) {
+    if (!html) return [];
+    const urls = new Set();
+
+    // Domains to ignore (CDN, analytics, fonts, etc)
+    const IGNORE_DOMAINS = [
+        'googleapis.com', 'cloudflare', 'gstatic.com', 'google-analytics.com',
+        'googletagmanager.com', 'facebook.com', 'twitter.com', 'doubleclick.net',
+        'googlesyndication.com', 'googleadservices.com', 'google.com/recaptcha',
+        'cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'unpkg.com',
+        'fonts.googleapis.com', 'fonts.gstatic.com',
+        'beacon.min.js', 'cloudflareinsights.com',
+        'favicon', '.css', '.js', '.png', '.jpg', '.svg', '.ico', '.woff'
+    ];
+
+    function shouldIgnore(url) {
+        const lower = url.toLowerCase();
+        return IGNORE_DOMAINS.some(d => lower.includes(d));
+    }
+
+    // 1. JSON escaped URLs: "url":"https:\/\/sfl.gl\/xxx"
+    const jsonUrlRegex = /"url"\s*:\s*"(https?:\\?\/\\?\/[^"]+)"/gi;
+    let match;
+    while ((match = jsonUrlRegex.exec(html)) !== null) {
+        try {
+            const url = match[1].replace(/\\\/|\\\//g, '/');
+            if (!shouldIgnore(url)) urls.add(url);
+        } catch {}
+    }
+
+    // 2. JSON "href" or "link" fields
+    const jsonHrefRegex = /"(?:href|link|redirect|destination|target_url|download_url|file_url|goto)"\s*:\s*"(https?:\\?\/\\?\/[^"]+)"/gi;
+    while ((match = jsonHrefRegex.exec(html)) !== null) {
+        try {
+            const url = match[1].replace(/\\\/|\\\//g, '/');
+            if (!shouldIgnore(url)) urls.add(url);
+        } catch {}
+    }
+
+    // 3. data-page or data-props JSON attributes (Inertia.js, Vue, React)
+    const dataAttrRegex = /data-(?:page|props|config)\s*=\s*"([^"]+)"/gi;
+    while ((match = dataAttrRegex.exec(html)) !== null) {
+        try {
+            const decoded = match[1]
+                .replace(/&quot;/g, '"')
+                .replace(/&amp;/g, '&')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>');
+            // Extract URLs from the decoded JSON string
+            const innerUrlRegex = /"url"\s*:\s*"(https?:\\?\/\\?\/[^"]+)"/gi;
+            let innerMatch;
+            while ((innerMatch = innerUrlRegex.exec(decoded)) !== null) {
+                const url = innerMatch[1].replace(/\\\/|\\\//g, '/');
+                if (!shouldIgnore(url)) urls.add(url);
+            }
+        } catch {}
+    }
+
+    // 4. HTML entity encoded JSON in attributes
+    const entityJsonRegex = /data-[a-z]+\s*=\s*"([^"]*(?:&quot;|&#34;)[^"]*)"/gi;
+    while ((match = entityJsonRegex.exec(html)) !== null) {
+        try {
+            const decoded = match[1]
+                .replace(/&quot;/g, '"')
+                .replace(/&#34;/g, '"')
+                .replace(/&amp;/g, '&')
+                .replace(/&#38;/g, '&');
+            const innerUrlRegex = /"(?:url|href|link)"\s*:\s*"(https?:\\?\/\\?\/[^"]+)"/gi;
+            let innerMatch;
+            while ((innerMatch = innerUrlRegex.exec(decoded)) !== null) {
+                const url = innerMatch[1].replace(/\\\/|\\\//g, '/');
+                if (!shouldIgnore(url)) urls.add(url);
+            }
+        } catch {}
+    }
+
+    // 5. Standard href attributes with external links
+    const hrefRegex = /href\s*=\s*["'](https?:\/\/[^"']+)["']/gi;
+    while ((match = hrefRegex.exec(html)) !== null) {
+        const url = match[1];
+        if (!shouldIgnore(url)) {
+            try {
+                const hostname = new URL(url).hostname.toLowerCase();
+                // Only include if different from source domain
+                if (!sourceHostname || !hostname.includes(sourceHostname.replace(/^www\./, ''))) {
+                    urls.add(url);
+                }
+            } catch {}
+        }
+    }
+
+    return [...urls];
+}
+
+// ---- Recursive Deep URL Resolution ----
+async function resolveUrlDeep(url, maxDepth = 3, visited = new Set()) {
+    if (maxDepth <= 0 || visited.has(url)) return null;
+    visited.add(url);
+
+    // Check if already a file host
+    if (isFileHost(url)) {
+        return { url, host: getFileHostInfo(url), method: 'deep-resolve' };
+    }
+
+    try {
+        // Follow redirects for this URL
+        const result = await followRedirects(url);
+
+        // Check redirect chain
+        for (const chainUrl of result.chain) {
+            if (isFileHost(chainUrl)) {
+                return { url: chainUrl, host: getFileHostInfo(chainUrl), method: 'deep-redirect' };
+            }
+        }
+
+        // Scan HTML for file host links
+        if (result.html) {
+            const fileLinks = scanHtmlForFileLinks(result.html);
+            if (fileLinks.length > 0) {
+                return { url: fileLinks[0], host: getFileHostInfo(fileLinks[0]), method: 'deep-html-scan' };
+            }
+
+            // Extract all URLs and try resolving them recursively
+            let sourceHostname = '';
+            try { sourceHostname = new URL(url).hostname; } catch {}
+            const allUrls = scanHtmlForAllUrls(result.html, sourceHostname);
+
+            for (const foundUrl of allUrls) {
+                if (!visited.has(foundUrl)) {
+                    const deepResult = await resolveUrlDeep(foundUrl, maxDepth - 1, visited);
+                    if (deepResult) return deepResult;
+                }
+            }
+        }
+    } catch {}
+
+    return null;
+}
+
 // ---- Also try client-side-style extraction on URL itself ----
 function tryClientSideExtraction(url) {
     // Check if URL contains encoded download links in params
@@ -446,7 +586,7 @@ module.exports = async function handler(req, res) {
                 });
             }
 
-            // Scan HTML content
+            // Scan HTML content for direct file host links
             const foundLinks = scanHtmlForFileLinks(result.html);
             if (foundLinks.length > 0) {
                 return res.json({
@@ -458,9 +598,28 @@ module.exports = async function handler(req, res) {
                     chain: result.chain
                 });
             }
+
+            // Step 4: Deep scan - extract ALL URLs from HTML (including JSON data)
+            // and recursively follow them to find file host links
+            let sourceHostname = '';
+            try { sourceHostname = new URL(validatedUrl).hostname; } catch {}
+            const allUrls = scanHtmlForAllUrls(result.html, sourceHostname);
+
+            for (const candidateUrl of allUrls) {
+                const deepResult = await resolveUrlDeep(candidateUrl, 3, new Set([validatedUrl, result.finalUrl]));
+                if (deepResult) {
+                    return res.json({
+                        success: true,
+                        url: deepResult.url,
+                        host: deepResult.host,
+                        method: 'deep-scan: ' + deepResult.method,
+                        chain: [...result.chain, candidateUrl, deepResult.url]
+                    });
+                }
+            }
         }
 
-        // Step 4: Nothing found
+        // Step 5: Nothing found
         return res.json({
             success: false,
             finalUrl: result.finalUrl,

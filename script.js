@@ -453,6 +453,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'gplinks.co', 'gplinks.in', 'shrinkme.io',
         'shrinkearn.com', 'droplink.co', 'link1s.com',
         'shrtfly.com', 'za.gl', 'fc.lc',
+        'sub4unlock.co', 'sfl.gl', 'sub2unlock.com',
+        'sub2get.com', 'sub4unlock.com',
     ];
 
     /**
