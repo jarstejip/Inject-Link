@@ -17,6 +17,12 @@ jz_logo.jpg
 .env.local
 *.log
 
+# Node modules
+node_modules/
+
+# Vercel
+.vercel/
+
 # OS & Editor generated files
 .DS_Store
 Thumbs.db

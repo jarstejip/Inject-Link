@@ -346,6 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const FILE_HOSTS = {
         'mediafire.com': { name: 'MediaFire', color: '#326ce5' },
         'drive.google.com': { name: 'Google Drive', color: '#4285f4' },
+        'docs.google.com': { name: 'Google Docs', color: '#4285f4' },
         'mega.nz': { name: 'Mega.nz', color: '#cc0000' },
         'mega.co.nz': { name: 'Mega.nz', color: '#cc0000' },
         'zippyshare.com': { name: 'Zippyshare', color: '#e8730e' },
@@ -364,6 +365,29 @@ document.addEventListener('DOMContentLoaded', () => {
         'turbobit.net': { name: 'Turbobit', color: '#e53935' },
         'hitfile.net': { name: 'HitFile', color: '#ff6f00' },
         'hexupload.net': { name: 'HexUpload', color: '#7c4dff' },
+        'sfile.mobi': { name: 'SFile', color: '#4caf50' },
+        'hxfile.co': { name: 'HXFile', color: '#ff5722' },
+        'acefile.co': { name: 'AceFile', color: '#2196f3' },
+        'letsupload.io': { name: 'LetsUpload', color: '#673ab7' },
+        'dropbox.com': { name: 'Dropbox', color: '#0061ff' },
+        'onedrive.live.com': { name: 'OneDrive', color: '#0078d4' },
+        'terabox.com': { name: 'Terabox', color: '#2962ff' },
+        'uploadrar.com': { name: 'UploadRar', color: '#f44336' },
+        'download.gg': { name: 'Download.gg', color: '#7c4dff' },
+        'devuploads.com': { name: 'DevUploads', color: '#00bcd4' },
+        'usercloud.com': { name: 'UserCloud', color: '#8bc34a' },
+        'userscloud.com': { name: 'UsersCloud', color: '#8bc34a' },
+        'sendit.cloud': { name: 'SendIt', color: '#ff9800' },
+        'uploadev.org': { name: 'UploadEv', color: '#607d8b' },
+        'fastupload.io': { name: 'FastUpload', color: '#00e676' },
+        'workupload.com': { name: 'WorkUpload', color: '#3f51b5' },
+        'depositfiles.com': { name: 'DepositFiles', color: '#ff5252' },
+        'ddownload.com': { name: 'DDownload', color: '#1565c0' },
+        'katfile.com': { name: 'KatFile', color: '#f50057' },
+        'disk.yandex': { name: 'Yandex Disk', color: '#ffcc00' },
+        'cloud.mail.ru': { name: 'Mail.ru Cloud', color: '#005ff9' },
+        'files.fm': { name: 'Files.fm', color: '#00c853' },
+        'uploadbox.io': { name: 'UploadBox', color: '#9c27b0' },
     };
 
     /**
@@ -371,30 +395,76 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const SAFELINK_PATTERNS = [
         // Base64 encoded in query params
-        { regex: /[?&](?:url|link|go|r|redirect|out|target|dest|destination|d|u|l)=([A-Za-z0-9+/=]{20,})/i, type: 'base64-param' },
+        { regex: /[?&](?:url|link|go|r|redirect|out|target|dest|destination|d|u|l|ref|src|file|download)=([A-Za-z0-9+/=]{20,})/i, type: 'base64-param' },
         // URL encoded in query params
-        { regex: /[?&](?:url|link|go|r|redirect|out|target|dest|destination|d|u|l)=(https?%3A[^&]+)/i, type: 'url-encoded-param' },
+        { regex: /[?&](?:url|link|go|r|redirect|out|target|dest|destination|d|u|l|ref|src|file|download)=(https?%3A[^&]+)/i, type: 'url-encoded-param' },
         // Plain URL in query params
-        { regex: /[?&](?:url|link|go|r|redirect|out|target|dest|destination|d|u|l)=(https?:\/\/[^&]+)/i, type: 'plain-url-param' },
+        { regex: /[?&](?:url|link|go|r|redirect|out|target|dest|destination|d|u|l|ref|src|file|download)=(https?:\/\/[^&]+)/i, type: 'plain-url-param' },
         // Safelinku patterns
         { regex: /safelinku?\.com.*[?&](?:url|link)=([^&]+)/i, type: 'safelinku' },
         // SafeFile/Safefile patterns
         { regex: /safe-?file[^/]*\/.*[?&](?:url|link|code)=([^&]+)/i, type: 'safefile' },
         // Safelink converter patterns  
         { regex: /safelink[^/]*\/.*[?&](?:url|link|code|id)=([^&]+)/i, type: 'safelink-converter' },
+        // Semawur patterns (Indonesian)
+        { regex: /semawur\.com.*[?&](?:url|link|go)=([^&]+)/i, type: 'semawur' },
+        // Teknogram patterns (Indonesian)
+        { regex: /teknogram\.id.*[?&](?:url|link|go)=([^&]+)/i, type: 'teknogram' },
         // ouo.io and similar
         { regex: /ouo\.(?:io|press)\/([A-Za-z0-9]+)/i, type: 'ouo' },
         // GPLinks
         { regex: /gplinks\.(?:co|in)\/([A-Za-z0-9]+)/i, type: 'gplinks' },
         // Exe.io / exey.io
         { regex: /exe[y]?\.io\/([A-Za-z0-9]+)/i, type: 'exe-io' },
+        // Shrinkme / ShrinkEarn
+        { regex: /(?:shrinkme|shrinkearn)\.(?:io|com)\/([A-Za-z0-9]+)/i, type: 'shrinkme' },
+        // Droplink
+        { regex: /droplink\.co\/([A-Za-z0-9]+)/i, type: 'droplink' },
+        // Link1s
+        { regex: /link1s?\.com\/([A-Za-z0-9]+)/i, type: 'link1s' },
+        // ShrtFly
+        { regex: /shrtfly\.com\/([A-Za-z0-9]+)/i, type: 'shrtfly' },
+        // Za.gl
+        { regex: /za\.gl\/([A-Za-z0-9]+)/i, type: 'za-gl' },
+        // fc.lc
+        { regex: /fc\.lc\/([A-Za-z0-9]+)/i, type: 'fc-lc' },
         // General base64 in hash/fragment
         { regex: /#([A-Za-z0-9+/=]{20,})$/i, type: 'base64-hash' },
         // General base64 in path
-        { regex: /\/(?:go|link|out|redirect|visit|dl|download)\/([A-Za-z0-9+/=]{20,})/i, type: 'base64-path' },
+        { regex: /\/(?:go|link|out|redirect|visit|dl|download|get|file|open)\/([A-Za-z0-9+/=]{20,})/i, type: 'base64-path' },
         // Double-encoded base64
         { regex: /[?&](?:url|link|r)=([A-Za-z0-9%+/=]{20,})/i, type: 'double-encoded' },
+        // Any remaining query param with long value (catch-all)
+        { regex: /[?&][a-z]+=([A-Za-z0-9+/=_-]{30,})/i, type: 'catch-all-param' },
     ];
+
+    /**
+     * Known URL shortener domains (need server-side redirect following)
+     */
+    const SHORTENER_DOMAINS = [
+        'bit.ly', 'bitly.com', 'tinyurl.com', 'is.gd', 'v.gd',
+        't.co', 'ow.ly', 'goo.gl', 'cutt.ly', 'rb.gy',
+        's.id', 'pndk.to', 'pendek.to', 'clfrm.com',
+        'link.tl', 'shorturl.at', 'tiny.cc', 'rebrand.ly',
+        'bl.ink', 'hfrm.link', 'linktr.ee', 'lnk.to',
+        'short.io', 'hyp.ae', 'qps.ru', 'clck.ru',
+        'ouo.io', 'ouo.press', 'exe.io', 'exey.io',
+        'gplinks.co', 'gplinks.in', 'shrinkme.io',
+        'shrinkearn.com', 'droplink.co', 'link1s.com',
+        'shrtfly.com', 'za.gl', 'fc.lc',
+    ];
+
+    /**
+     * Check if URL is a known shortener that needs API
+     */
+    function isKnownShortener(url) {
+        try {
+            const hostname = new URL(url).hostname.toLowerCase().replace(/^www\./, '');
+            return SHORTENER_DOMAINS.some(d => hostname === d || hostname.endsWith('.' + d));
+        } catch {
+            return false;
+        }
+    }
 
     /**
      * Detect file hosting service from URL
@@ -531,8 +601,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 5. Check for nested URL in the URL path/query
-        const nestedUrlMatch = url.match(/(https?:\/\/(?:www\.)?(?:mediafire|drive\.google|mega\.nz|mega\.co\.nz|pixeldrain|gofile|krakenfiles|anonfiles|bayfiles|zippyshare|solidfiles)[^\s&"'<>]+)/i);
+        // 5. Check for nested URL in the URL path/query (expanded list)
+        const fileHostPattern = Object.keys(FILE_HOSTS).map(d => d.replace(/\./g, '\\.')).join('|');
+        const nestedRegex = new RegExp('(https?:\\/\\/(?:www\\.)?(?:' + fileHostPattern + ')[^\\s&"\'<>]*)', 'i');
+        const nestedUrlMatch = url.match(nestedRegex);
         if (nestedUrlMatch) {
             const host = detectFileHost(nestedUrlMatch[1]);
             return { url: nestedUrlMatch[1], host: host, method: 'nested-url' };
@@ -542,26 +614,115 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Main process function
+     * Call server-side Unshorten API (Vercel Serverless)
+     */
+    async function callUnshortenApi(targetUrl) {
+        const apiUrl = `/api/unshorten?url=${encodeURIComponent(targetUrl)}`;
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+        return await response.json();
+    }
+
+    /**
+     * Fallback: Use public CORS proxy to follow redirects
+     */
+    async function tryPublicProxy(targetUrl) {
+        const proxies = [
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+            `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
+        ];
+
+        for (const proxyUrl of proxies) {
+            try {
+                const response = await fetch(proxyUrl, {
+                    method: 'GET',
+                    signal: AbortSignal.timeout(10000)
+                });
+
+                if (!response.ok) continue;
+
+                // Check if the final URL (after proxy redirect) is a file host
+                const finalUrl = response.url;
+                if (finalUrl && detectFileHost(finalUrl)) {
+                    return { url: finalUrl, host: detectFileHost(finalUrl), method: 'proxy-redirect' };
+                }
+
+                // Scan response text for file host links
+                const text = await response.text();
+                const fileHostPattern = Object.keys(FILE_HOSTS).map(d => d.replace(/\./g, '\\.')).join('|');
+                const linkRegex = new RegExp('https?://(?:www\\.)?(?:' + fileHostPattern + ')[^\\s"\'>\\)\\]]*', 'gi');
+                const matches = text.match(linkRegex);
+
+                if (matches && matches.length > 0) {
+                    const found = matches[0];
+                    return { url: found, host: detectFileHost(found), method: 'proxy-html-scan' };
+                }
+            } catch {
+                continue;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Main process function - Multi-strategy extraction
      */
     async function processLink(url) {
         // Show loading
         setLoading(true);
         hideResults();
 
-        // Simulate network delay for UX feel
-        await sleep(1200 + Math.random() * 800);
+        // Short delay for UX feel
+        await sleep(600 + Math.random() * 400);
 
         try {
-            const result = extractLink(url);
-            
-            if (result && result.url) {
-                showSuccess(result);
-                // Increment counter
+            // ===== STRATEGY 1: Client-side extraction (instant) =====
+            const clientResult = extractLink(url);
+            if (clientResult && clientResult.url) {
+                showSuccess(clientResult);
                 incrementStat();
-            } else {
-                showError('Link tidak dapat diekstrak. Pastikan URL yang dimasukkan adalah safelink yang valid dan berisi link download.');
+                return;
             }
+
+            // ===== STRATEGY 2: Server-side API (for shorteners/redirects) =====
+            try {
+                updateLoadingText('Mengikuti redirect...');
+                const apiResult = await callUnshortenApi(url);
+                if (apiResult && apiResult.success && apiResult.url) {
+                    const host = detectFileHost(apiResult.url);
+                    showSuccess({
+                        url: apiResult.url,
+                        host: host || { name: apiResult.host || 'Link Ditemukan', color: '#2196f3' },
+                        method: apiResult.method
+                    });
+                    incrementStat();
+                    return;
+                }
+            } catch (apiErr) {
+                console.warn('Server API fallback skipped:', apiErr.message);
+            }
+
+            // ===== STRATEGY 3: Public CORS proxy fallback =====
+            try {
+                updateLoadingText('Mencoba proxy alternatif...');
+                const proxyResult = await tryPublicProxy(url);
+                if (proxyResult && proxyResult.url) {
+                    showSuccess(proxyResult);
+                    incrementStat();
+                    return;
+                }
+            } catch (proxyErr) {
+                console.warn('Proxy fallback skipped:', proxyErr.message);
+            }
+
+            // ===== SEMUA STRATEGI GAGAL =====
+            showError('Link tidak dapat diekstrak. Pastikan URL yang dimasukkan berisi link download (MediaFire, Mega, Google Drive, dll). Jika ini adalah URL shortener, coba deploy web ini di Vercel agar API redirect bisa berfungsi.');
+
         } catch (err) {
             showError('Terjadi kesalahan saat memproses link. Silakan coba lagi.');
         } finally {
@@ -578,6 +739,10 @@ document.addEventListener('DOMContentLoaded', () => {
         btnText.textContent = loading ? 'Memproses...' : 'Inject Link';
         btnLoader.classList.toggle('hidden', !loading);
         btnArrow.classList.toggle('hidden', loading);
+    }
+
+    function updateLoadingText(text) {
+        if (btnText) btnText.textContent = text;
     }
 
     function hideResults() {
