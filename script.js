@@ -366,6 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'hitfile.net': { name: 'HitFile', color: '#ff6f00' },
         'hexupload.net': { name: 'HexUpload', color: '#7c4dff' },
         'sfile.mobi': { name: 'SFile', color: '#4caf50' },
+        'sfile.co': { name: 'SFile', color: '#4caf50' },
         'hxfile.co': { name: 'HXFile', color: '#ff5722' },
         'acefile.co': { name: 'AceFile', color: '#2196f3' },
         'letsupload.io': { name: 'LetsUpload', color: '#673ab7' },

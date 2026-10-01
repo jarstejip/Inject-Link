@@ -15,7 +15,7 @@ const FILE_HOST_DOMAINS = [
     'bayfiles.com', 'zippyshare.com', 'solidfiles.com', 'tusfiles.com',
     'racaty.net', 'fichier.com', 'uptobox.com', 'turbobit.net',
     'hitfile.net', 'hexupload.net', 'uploadhaven.com', 'file.io',
-    'sfile.mobi', 'dropbox.com', 'onedrive.live.com', 'terabox.com',
+    'sfile.mobi', 'sfile.co', 'dropbox.com', 'onedrive.live.com', 'terabox.com',
     'uploadrar.com', 'hxfile.co', 'acefile.co', 'letsupload.io',
     'devuploads.com', 'download.gg', 'usercloud.com', 'userscloud.com',
     'sendit.cloud', 'uploadev.org', 'fastupload.io', 'shareupload.com',
