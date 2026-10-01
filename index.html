@@ -539,11 +539,11 @@
                     </div>
                     <div>
                         <h4 class="ai-name">JZ AI Assistant</h4>
-                        <span class="ai-model-tag" id="ai-active-model-tag">Google Gemini</span>
+                        <span class="ai-model-tag" id="ai-active-model-tag">Universal AI (Online)</span>
                     </div>
                 </div>
                 <div class="ai-header-actions">
-                    <button type="button" class="ai-btn-icon" id="ai-settings-btn" title="Pengaturan AI (Gemini / GPT)">
+                    <button type="button" class="ai-btn-icon" id="ai-settings-btn" title="Pengaturan Model AI">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
                             <circle cx="12" cy="12" r="3"/>
@@ -558,7 +558,7 @@
                 </div>
             </div>
 
-            <!-- Settings Panel (Gemini / GPT switch) -->
+            <!-- Settings Panel (Universal / Gemini / GPT switch) -->
             <div class="ai-settings-panel hidden" id="ai-settings-panel">
                 <div class="ai-settings-header">
                     <h5>Pengaturan Model AI</h5>
@@ -571,18 +571,23 @@
                 <div class="ai-settings-body">
                     <label class="ai-setting-label">Pilih Provider:</label>
                     <div class="ai-provider-toggle">
-                        <button type="button" class="ai-provider-btn active" id="btn-provider-gemini" data-provider="gemini">Google Gemini</button>
+                        <button type="button" class="ai-provider-btn active" id="btn-provider-universal" data-provider="universal">Universal (Gratis)</button>
+                        <button type="button" class="ai-provider-btn" id="btn-provider-gemini" data-provider="gemini">Google Gemini</button>
                         <button type="button" class="ai-provider-btn" id="btn-provider-openai" data-provider="openai">OpenAI (GPT)</button>
                     </div>
 
-                    <div id="ai-gemini-config">
-                        <label class="ai-setting-label" for="ai-gemini-key">Gemini API Key:</label>
+                    <div id="ai-universal-config">
+                        <span class="ai-setting-hint" style="color: #60a5fa; font-weight: 500;">✓ Mode Universal aktif gratis! Bisa langsung ditanyai tentang segala topik (sains, matematika, coding, dsb) tanpa perlu API Key.</span>
+                    </div>
+
+                    <div id="ai-gemini-config" class="hidden">
+                        <label class="ai-setting-label" for="ai-gemini-key">Gemini API Key (Opsional):</label>
                         <input type="password" id="ai-gemini-key" class="ai-setting-input" placeholder="Masukkan Gemini API Key..." autocomplete="off">
                         <span class="ai-setting-hint">Dapatkan gratis di <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Google AI Studio</a></span>
                     </div>
 
                     <div id="ai-openai-config" class="hidden">
-                        <label class="ai-setting-label" for="ai-openai-key">OpenAI API Key:</label>
+                        <label class="ai-setting-label" for="ai-openai-key">OpenAI API Key (Opsional):</label>
                         <input type="password" id="ai-openai-key" class="ai-setting-input" placeholder="sk-..." autocomplete="off">
                         <span class="ai-setting-hint">Dapatkan di <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">OpenAI Platform</a></span>
                     </div>
@@ -598,20 +603,21 @@
                 <div class="ai-msg ai-msg-bot">
                     <div class="ai-msg-avatar">JZ</div>
                     <div class="ai-msg-bubble">
-                        Halo! 👋 Saya <strong>JZ AI Assistant</strong>. Ada yang bisa saya bantu seputar ekstraksi link, bypass safelink/safefile, atau pertanyaan lainnya?
+                        Halo! 👋 Saya <strong>JZ AI Assistant</strong>. Kamu bisa tanyakan <strong>apa saja tentang semua hal</strong> kepada saya — mulai dari coding, sains, matematika, sejarah, tugas sekolah, obrolan umum, hingga cara bypass safelink! Mau tanya apa hari ini? 😊
                     </div>
                 </div>
                 <!-- Quick suggestions -->
                 <div class="ai-suggestions" id="ai-suggestions">
-                    <button type="button" class="ai-chip" data-query="Bagaimana cara kerja bypass safelink di sini?">Cara kerja bypass?</button>
-                    <button type="button" class="ai-chip" data-query="Platform apa saja yang didukung?">Platform apa saja?</button>
-                    <button type="button" class="ai-chip" data-query="Bagaimana cara setting API Key Gemini atau GPT?">Cara setting API Key?</button>
+                    <button type="button" class="ai-chip" data-query="Apa saja yang bisa kamu jawab?">Bisa jawab apa saja?</button>
+                    <button type="button" class="ai-chip" data-query="Jelaskan secara ringkas rumus Pythagoras dan contohnya">Rumus Pythagoras</button>
+                    <button type="button" class="ai-chip" data-query="Bagaimana cara kerja bypass safelink di web ini?">Cara kerja bypass?</button>
+                    <button type="button" class="ai-chip" data-query="Buatkan contoh fungsi fetch API di JavaScript">Kode Javascript fetch</button>
                 </div>
             </div>
 
             <!-- Chat Input -->
             <div class="ai-input-bar">
-                <input type="text" id="ai-input" class="ai-input" placeholder="Ketik pertanyaan untuk JZ AI..." autocomplete="off">
+                <input type="text" id="ai-input" class="ai-input" placeholder="Tanyakan apa saja (sains, coding, pelajaran, umum)..." autocomplete="off">
                 <button type="button" id="ai-send-btn" class="ai-send-btn" title="Kirim Pesan">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="22" y1="2" x2="11" y2="13"/>

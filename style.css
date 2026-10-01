@@ -2064,7 +2064,27 @@ input {
     background: rgba(0, 0, 0, 0.06);
     padding: 2px 5px;
     border-radius: 4px;
-    font-size: 0.8em;
+    font-size: 0.82em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.ai-msg-bubble pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.8rem;
+    margin: 8px 0;
+    line-height: 1.45;
+    border: 1px solid #1e293b;
+}
+
+.ai-msg-bubble pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
 }
 
 .ai-msg-bubble strong {

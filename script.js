@@ -831,8 +831,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const aiSettingsClose = document.getElementById('ai-settings-close');
     const aiActiveModelTag = document.getElementById('ai-active-model-tag');
 
+    const btnProviderUniversal = document.getElementById('btn-provider-universal');
     const btnProviderGemini = document.getElementById('btn-provider-gemini');
     const btnProviderOpenai = document.getElementById('btn-provider-openai');
+    const aiUniversalConfig = document.getElementById('ai-universal-config');
     const aiGeminiConfig = document.getElementById('ai-gemini-config');
     const aiOpenaiConfig = document.getElementById('ai-openai-config');
     const aiGeminiKeyInput = document.getElementById('ai-gemini-key');
@@ -845,27 +847,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const aiSuggestions = document.getElementById('ai-suggestions');
 
     // Load saved settings
-    let aiProvider = localStorage.getItem('jz_ai_provider') || 'gemini';
+    let aiProvider = localStorage.getItem('jz_ai_provider') || 'universal';
     let geminiKey = localStorage.getItem('jz_gemini_key') || '';
     let openaiKey = localStorage.getItem('jz_openai_key') || '';
     let isAiResponding = false;
+    let conversationHistory = [];
 
     if (aiGeminiKeyInput) aiGeminiKeyInput.value = geminiKey;
     if (aiOpenaiKeyInput) aiOpenaiKeyInput.value = openaiKey;
 
     function updateAiUiState() {
+        btnProviderUniversal?.classList.remove('active');
+        btnProviderGemini?.classList.remove('active');
+        btnProviderOpenai?.classList.remove('active');
+        aiUniversalConfig?.classList.add('hidden');
+        aiGeminiConfig?.classList.add('hidden');
+        aiOpenaiConfig?.classList.add('hidden');
+
         if (aiProvider === 'gemini') {
             btnProviderGemini?.classList.add('active');
-            btnProviderOpenai?.classList.remove('active');
             aiGeminiConfig?.classList.remove('hidden');
-            aiOpenaiConfig?.classList.add('hidden');
-            if (aiActiveModelTag) aiActiveModelTag.textContent = geminiKey ? 'Gemini 1.5 Flash' : 'Google Gemini (Demo)';
-        } else {
-            btnProviderGemini?.classList.remove('active');
+            if (aiActiveModelTag) aiActiveModelTag.textContent = geminiKey ? 'Gemini 1.5 Flash' : 'Google Gemini (Tanpa Key)';
+        } else if (aiProvider === 'openai') {
             btnProviderOpenai?.classList.add('active');
-            aiGeminiConfig?.classList.add('hidden');
             aiOpenaiConfig?.classList.remove('hidden');
-            if (aiActiveModelTag) aiActiveModelTag.textContent = openaiKey ? 'GPT-4o Mini' : 'OpenAI GPT (Demo)';
+            if (aiActiveModelTag) aiActiveModelTag.textContent = openaiKey ? 'GPT-4o Mini' : 'OpenAI (Tanpa Key)';
+        } else {
+            btnProviderUniversal?.classList.add('active');
+            aiUniversalConfig?.classList.remove('hidden');
+            if (aiActiveModelTag) aiActiveModelTag.textContent = 'Universal AI (Online)';
         }
     }
     updateAiUiState();
@@ -902,6 +912,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Provider Selector
+    if (btnProviderUniversal) {
+        btnProviderUniversal.addEventListener('click', () => {
+            aiProvider = 'universal';
+            updateAiUiState();
+        });
+    }
     if (btnProviderGemini) {
         btnProviderGemini.addEventListener('click', () => {
             aiProvider = 'gemini';
@@ -1006,58 +1022,95 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function formatMarkdown(text) {
+        if (!text) return '';
         let escaped = text
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
 
+        // Fenced code blocks ```lang ... ```
+        escaped = escaped.replace(/```(?:[a-z0-9_-]+)?\s*([\s\S]*?)```/gi, (match, code) => {
+            return `<pre><code>${code.trim()}</code></pre>`;
+        });
+
+        // Headers
+        escaped = escaped.replace(/^### (.*?)$/gm, '<h5 style="margin: 6px 0 2px 0; font-size: 0.95rem;">$1</h5>');
+        escaped = escaped.replace(/^## (.*?)$/gm, '<h4 style="margin: 8px 0 3px 0; font-size: 1rem;">$1</h4>');
+        escaped = escaped.replace(/^# (.*?)$/gm, '<h3 style="margin: 10px 0 4px 0; font-size: 1.05rem;">$1</h3>');
+
         // Bold **text**
         escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         // Inline code `code`
         escaped = escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
+        // Bullet list points
+        escaped = escaped.replace(/^[•\-\*] (.*?)$/gm, '• $1');
         // Newlines
         escaped = escaped.replace(/\n/g, '<br>');
+
+        // Restore clean newlines inside pre blocks
+        escaped = escaped.replace(/<pre><code>([\s\S]*?)<\/code><\/pre>/gi, (match, code) => {
+            return `<pre><code>${code.replace(/<br>/g, '\n')}</code></pre>`;
+        });
+
         return escaped;
     }
 
-    // Built-in intelligent answering knowledge base
+    // Built-in intelligent answering knowledge base (Offline fallback)
     function getBuiltinKnowledgeResponse(query) {
         const q = query.toLowerCase();
 
         if (q.includes('cara kerja') || q.includes('cara bypass') || q.includes('bagaimana cara')) {
-            return "Cara menggunakan **JZINJECTLINK** sangat mudah:\n1. Copy link safelink / URL shortener yang kamu miliki.\n2. Paste link ke kolom input di atas.\n3. Centang verifikasi keamanan **'Saya bukan robot'**.\n4. Klik **'Inject Link'**.\n5. Sistem otomatis mendekode base64 & parameter tersembunyi hingga menemukan link asli (seperti MediaFire atau Google Drive) tanpa harus melewati iklan!";
+            return "Cara menggunakan **JZINJECTLINK** sangat mudah:\n1. Copy link safelink / URL shortener yang kamu miliki.\n2. Paste link ke kolom input di atas.\n3. Centang verifikasi keamanan **'Saya bukan robot'**.\n4. Klik **'Inject Link'**.\n5. Sistem otomatis membongkar redirect, Base64, dan data halaman untuk menemukan link download asli (MediaFire, Google Drive, Mega, SFile, dll) tanpa melewati iklan!";
         }
 
         if (q.includes('platform') || q.includes('didukung') || q.includes('hosting')) {
-            return "JZINJECTLINK mendukung berbagai platform populer:\n• **Safelink**: SafelinkU, SafeFile, Safelink Converter, Bit.ly, Ouo.io, GPLinks, dsb.\n• **File Hosting**: MediaFire, Google Drive, Mega.nz, Zippyshare, Pixeldrain, Krakenfiles, Gofile, dll.\n\nJika ada platform tertentu yang ingin ditambahkan, silakan beri tahu!";
-        }
-
-        if (q.includes('api key') || q.includes('setting') || q.includes('pengaturan') || q.includes('gemini') || q.includes('gpt')) {
-            return "Untuk menghubungkan AI dengan **Google Gemini** atau **OpenAI (GPT)**:\n1. Klik ikon ⚙️ **Pengaturan** di kanan atas kotak chat ini.\n2. Pilih provider: **Google Gemini** atau **OpenAI (GPT)**.\n3. Masukkan API Key kamu (bisa didapatkan gratis di Google AI Studio).\n4. Klik **Simpan Pengaturan**.\n\nSetelah tersimpan, kamu bisa ngobrol bebas tentang apapun dengan AI!";
-        }
-
-        if (q.includes('gagal') || q.includes('error') || q.includes('tidak bisa')) {
-            return "Jika link gagal diekstrak:\n1. Pastikan link yang dimasukkan lengkap dengan `http://` atau `https://`.\n2. Pastikan safelink tersebut memang berisi link download yang tersimpan di parameter URL atau kode Base64.\n3. Bila safelink memiliki proteksi captcha server, coba buka safelink satu langkah hingga muncul URL redirectnya, lalu masukkan URL tersebut ke JZINJECTLINK.";
+            return "JZINJECTLINK mendukung puluhan platform populer:\n• **Safelink & Shortener**: Sub4Unlock, SafelinkU, SafeFile, Bit.ly, Pndk.to, Semawur, Shrinkme, GPLinks, dsb.\n• **File Hosting**: MediaFire, Google Drive, Mega.nz, SFile.mobi, Dropbox, Terabox, Pixeldrain, Krakenfiles, Gofile, dll.\n\nJika ada link baru yang ingin ditambahkan, kamu bisa langsung mencoba paste di kolom inject!";
         }
 
         if (q.includes('halo') || q.includes('hai') || q.includes('pagi') || q.includes('siang') || q.includes('malam')) {
-            return "Halo! Ada yang bisa saya bantu seputar web **JZINJECTLINK** atau ekstraksi link download hari ini? 😊";
+            return "Halo! 👋 Saya **JZ AI Assistant**. Kamu bisa tanya apa saja kepada saya — mulai dari pengetahuan umum, sains, rumus matematika, pembuatan kode pemrograman, tugas sekolah, obrolan santai, hingga cara pakai web ini!";
         }
 
-        return "Terima kasih atas pertanyaannya! Saat ini saya beroperasi dalam mode asisten pintar bawaan **JZINJECTLINK**.\n\n💡 **Tip**: Ingin bertanya apa saja secara luas? Kamu bisa memasukkan **Google Gemini API Key** (gratis di Google AI Studio) atau **OpenAI GPT Key** melalui menu ⚙️ **Pengaturan** di atas!";
+        return "Halo! Saya **JZ AI Assistant**. Saya siap menjawab pertanyaan apapun mengenai berbagai bidang seperti sains, matematika, sejarah, coding, maupun seputar bypass link. Silakan tanyakan hal yang ingin kamu ketahui!";
+    }
+
+    // Direct Browser Call to Universal AI (Pollinations)
+    async function callUniversalDirect(history) {
+        const systemPrompt = "Kamu adalah JZ AI Assistant, asisten AI cerdas serba bisa yang terintegrasi di website JZINJECTLINK. Kamu BISA dan MAMPU menjawab pertanyaan tentang SEGALA HAL tanpa batas (pengetahuan umum, sains, fisika, matematika, rumus, coding dan pemrograman, tugas sekolah, obrolan santai, terjemahan, maupun tentang bypass link). Jawab dengan ramah, komunikatif, informatif, akurat, dan format Markdown rapi dalam bahasa Indonesia.";
+
+        const formatted = [
+            { role: 'system', content: systemPrompt },
+            ...history.map(m => ({
+                role: m.role === 'assistant' || m.role === 'bot' ? 'assistant' : 'user',
+                content: m.content || m.text || ''
+            }))
+        ];
+
+        const response = await fetch('https://text.pollinations.ai/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                messages: formatted,
+                model: 'openai',
+                seed: Math.floor(Math.random() * 100000)
+            })
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return await response.text();
     }
 
     // Call Google Gemini API
     async function callGeminiApi(prompt, apiKey) {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-        const systemContext = "Kamu adalah JZ AI Assistant, asisten ramah dan pintar untuk website JZINJECTLINK (web bypass link dan ekstraksi link download MediaFire/Google Drive dari safelink). Jawab dengan bahasa Indonesia yang jelas, ringkas, dan ramah.";
+        const systemContext = "Kamu adalah JZ AI Assistant, asisten AI cerdas dan serba bisa di website JZINJECTLINK. Kamu bisa menjawab semua pertanyaan tentang segala hal (sains, matematika, coding, umum, dsb). Jawab dengan ramah, komunikatif, dan rapi dalam bahasa Indonesia.";
 
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 contents: [{
-                    parts: [{ text: `${systemContext}\n\nPertanyaan pengguna: ${prompt}` }]
+                    parts: [{ text: `${systemContext}\n\nPertanyaan: ${prompt}` }]
                 }]
             })
         });
@@ -1074,7 +1127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Call OpenAI GPT API
     async function callOpenAiApi(prompt, apiKey) {
         const url = 'https://api.openai.com/v1/chat/completions';
-        const systemContext = "Kamu adalah JZ AI Assistant, asisten ramah dan pintar untuk website JZINJECTLINK (web bypass link dan ekstraksi link download MediaFire/Google Drive dari safelink). Jawab dengan bahasa Indonesia yang jelas, ringkas, dan ramah.";
+        const systemContext = "Kamu adalah JZ AI Assistant, asisten AI cerdas dan serba bisa di website JZINJECTLINK. Kamu bisa menjawab semua pertanyaan tentang segala hal (sains, matematika, coding, umum, dsb). Jawab dengan ramah, komunikatif, dan rapi dalam bahasa Indonesia.";
 
         const response = await fetch(url, {
             method: 'POST',
@@ -1088,7 +1141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     { role: 'system', content: systemContext },
                     { role: 'user', content: prompt }
                 ],
-                max_tokens: 600
+                max_tokens: 800
             })
         });
 
@@ -1101,6 +1154,77 @@ document.addEventListener('DOMContentLoaded', () => {
         return data.choices?.[0]?.message?.content || "Maaf, tidak ada respon dari OpenAI.";
     }
 
+    // Master AI Response Dispatcher
+    async function getAiAnswer(text) {
+        // Multi-turn context history
+        conversationHistory.push({ role: 'user', content: text });
+        if (conversationHistory.length > 10) {
+            conversationHistory = conversationHistory.slice(-10);
+        }
+
+        // Strategy 1: Call Vercel serverless /api/chat
+        try {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: conversationHistory,
+                    provider: aiProvider,
+                    apiKey: aiProvider === 'gemini' ? geminiKey : (aiProvider === 'openai' ? openaiKey : '')
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success && data.reply) {
+                    conversationHistory.push({ role: 'assistant', content: data.reply });
+                    return data.reply;
+                }
+            }
+        } catch (apiErr) {
+            console.warn('/api/chat backend unavailable, attempting direct client fallback:', apiErr.message);
+        }
+
+        // Strategy 2: Client-side Gemini if API key set
+        if (aiProvider === 'gemini' && geminiKey) {
+            try {
+                const reply = await callGeminiApi(text, geminiKey);
+                conversationHistory.push({ role: 'assistant', content: reply });
+                return reply;
+            } catch (gemErr) {
+                console.warn('Gemini client failed, falling back to Universal:', gemErr.message);
+            }
+        }
+
+        // Strategy 3: Client-side OpenAI if API key set
+        if (aiProvider === 'openai' && openaiKey) {
+            try {
+                const reply = await callOpenAiApi(text, openaiKey);
+                conversationHistory.push({ role: 'assistant', content: reply });
+                return reply;
+            } catch (oaiErr) {
+                console.warn('OpenAI client failed, falling back to Universal:', oaiErr.message);
+            }
+        }
+
+        // Strategy 4: Direct Universal AI (Pollinations.ai directly from browser)
+        try {
+            const reply = await callUniversalDirect(conversationHistory);
+            if (reply && reply.trim()) {
+                conversationHistory.push({ role: 'assistant', content: reply });
+                return reply;
+            }
+        } catch (uniErr) {
+            console.warn('Universal client call failed:', uniErr.message);
+        }
+
+        // Strategy 5: Offline built-in knowledge response
+        await sleep(500);
+        const fallbackReply = getBuiltinKnowledgeResponse(text);
+        conversationHistory.push({ role: 'assistant', content: fallbackReply });
+        return fallbackReply;
+    }
+
     // Send AI Message Workflow
     async function sendAiMessage(text) {
         if (isAiResponding) return;
@@ -1111,23 +1235,12 @@ document.addEventListener('DOMContentLoaded', () => {
         showTypingIndicator();
 
         try {
-            let botReply = '';
-
-            if (aiProvider === 'gemini' && geminiKey) {
-                botReply = await callGeminiApi(text, geminiKey);
-            } else if (aiProvider === 'openai' && openaiKey) {
-                botReply = await callOpenAiApi(text, openaiKey);
-            } else {
-                // Built-in intelligent assistant simulation delay
-                await sleep(700 + Math.random() * 500);
-                botReply = getBuiltinKnowledgeResponse(text);
-            }
-
+            const botReply = await getAiAnswer(text);
             hideTypingIndicator();
             appendMessage('bot', botReply);
         } catch (err) {
             hideTypingIndicator();
-            appendMessage('bot', `⚠️ **Error saat menghubungi ${aiProvider === 'gemini' ? 'Google Gemini' : 'OpenAI GPT'}**: ${err.message}.\n\nSilakan periksa kembali API Key kamu di menu ⚙️ Pengaturan.`);
+            appendMessage('bot', `⚠️ **Maaf, terjadi kendala saat memproses jawaban**: ${err.message}.\n\nKamu bisa mencoba mengirim ulang pertanyaan atau memilih provider lain di menu ⚙️ Pengaturan.`);
         } finally {
             isAiResponding = false;
         }
