@@ -204,6 +204,38 @@ async function followRedirects(startUrl, maxHops = 15) {
             continue;
         }
 
+        // ---- Check HTML form auto-redirect (e.g. sfl.gl, safelinku) ----
+        if (response.body && (response.body.includes('.submit()') || response.body.includes('form.submit'))) {
+            const formMatch = response.body.match(/<form[^>]*action=["']([^"']+)["'][^>]*method=["']?(get|post)?["']?[^>]*>([\s\S]*?)<\/form>/i);
+            if (formMatch) {
+                let actionUrl = formMatch[1];
+                const method = (formMatch[2] || 'get').toUpperCase();
+                const formBody = formMatch[3];
+
+                if (!actionUrl.startsWith('http')) {
+                    try { actionUrl = new URL(actionUrl, currentUrl).toString(); } catch {}
+                }
+
+                // Extract inputs
+                const inputRegex = /<input[^>]*name=["']([^"']+)["'][^>]*value=["']([^"']*)["'][^>]*>/gi;
+                let inputMatch;
+                const params = new URLSearchParams();
+                while ((inputMatch = inputRegex.exec(formBody)) !== null) {
+                    params.append(inputMatch[1], inputMatch[2]);
+                }
+
+                if (method === 'GET') {
+                    const finalFormUrl = actionUrl + (actionUrl.includes('?') ? '&' : '?') + params.toString();
+                    chain.push(finalFormUrl);
+                    if (isFileHost(finalFormUrl)) {
+                        return { finalUrl: finalFormUrl, chain, html: '' };
+                    }
+                    currentUrl = finalFormUrl;
+                    continue;
+                }
+            }
+        }
+
         // ---- No more redirects found ----
         return { finalUrl: currentUrl, chain, html: response.body };
     }
@@ -283,14 +315,18 @@ function scanHtmlForAllUrls(html, sourceHostname) {
     if (!html) return [];
     const urls = new Set();
 
-    // Domains to ignore (CDN, analytics, fonts, etc)
+    // Domains to ignore (CDN, analytics, fonts, social actions, etc)
     const IGNORE_DOMAINS = [
         'googleapis.com', 'cloudflare', 'gstatic.com', 'google-analytics.com',
-        'googletagmanager.com', 'facebook.com', 'twitter.com', 'doubleclick.net',
+        'googletagmanager.com', 'doubleclick.net',
         'googlesyndication.com', 'googleadservices.com', 'google.com/recaptcha',
         'cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'unpkg.com',
         'fonts.googleapis.com', 'fonts.gstatic.com',
         'beacon.min.js', 'cloudflareinsights.com',
+        // Social networks used as subscription/follow tasks in Sub4Unlock
+        'youtube.com', 'youtu.be', 'instagram.com', 'tiktok.com',
+        'facebook.com', 'twitter.com', 'x.com', 't.me', 'telegram.me',
+        'discord.gg', 'discord.com', 'reddit.com', 'spotify.com',
         'favicon', '.css', '.js', '.png', '.jpg', '.svg', '.ico', '.woff'
     ];
 
@@ -371,6 +407,44 @@ function scanHtmlForAllUrls(html, sourceHostname) {
     }
 
     return [...urls];
+}
+
+// ---- Extract Target URL from Unlocker Sites (Sub4Unlock, Sub2Unlock, etc.) ----
+function extractUnlockerTarget(html) {
+    if (!html) return null;
+
+    // 1. Inertia / Vue data-page attribute (Sub4Unlock, Sub2Unlock, etc.)
+    const dataPageMatch = html.match(/data-page\s*=\s*"([^"]+)"/i);
+    if (dataPageMatch) {
+        try {
+            const decoded = dataPageMatch[1]
+                .replace(/&quot;/g, '"')
+                .replace(/&amp;/g, '&')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>');
+            const pageData = JSON.parse(decoded);
+            if (pageData?.props?.link?.url) {
+                return pageData.props.link.url;
+            }
+            if (pageData?.props?.target_url || pageData?.props?.destination || pageData?.props?.url) {
+                return pageData.props.target_url || pageData.props.destination || pageData.props.url;
+            }
+        } catch {}
+    }
+
+    // 2. Direct regex on &quot;url&quot; inside &quot;link&quot; object
+    const linkMatch = html.match(/(?:&quot;|")link(?:&quot;|")\s*:\s*\{[^}]*?(?:&quot;|")url(?:&quot;|")\s*:\s*(?:&quot;|")(https?:\\?\/\\?\/[^"&]+)(?:&quot;|")/i);
+    if (linkMatch) {
+        return linkMatch[1].replace(/\\\/|\\\//g, '/');
+    }
+
+    // 3. Fallback regex for data-page url
+    const simpleUrlMatch = html.match(/data-page="[^"]*?(?:&quot;|")url(?:&quot;|")\s*:\s*(?:&quot;|")(https?:\\?\/\\?\/[^"&]+)(?:&quot;|")/i);
+    if (simpleUrlMatch) {
+        return simpleUrlMatch[1].replace(/\\\/|\\\//g, '/');
+    }
+
+    return null;
 }
 
 // ---- Recursive Deep URL Resolution ----
@@ -599,6 +673,45 @@ module.exports = async function handler(req, res) {
                 });
             }
 
+            // Check for Sub4Unlock or Unlocker target first!
+            const unlockerTarget = extractUnlockerTarget(result.html);
+            if (unlockerTarget) {
+                // If the target is already a file host, return immediately!
+                if (isFileHost(unlockerTarget)) {
+                    return res.json({
+                        success: true,
+                        url: unlockerTarget,
+                        host: getFileHostInfo(unlockerTarget),
+                        method: 'unlocker-direct',
+                        chain: [...result.chain, unlockerTarget]
+                    });
+                }
+
+                // Try to resolve the unlocked target URL deeply
+                try {
+                    const deepTarget = await resolveUrlDeep(unlockerTarget, 2, new Set([validatedUrl, unlockerTarget]));
+                    if (deepTarget) {
+                        return res.json({
+                            success: true,
+                            url: deepTarget.url,
+                            host: deepTarget.host,
+                            method: 'unlocker-resolved: ' + deepTarget.method,
+                            chain: [...result.chain, unlockerTarget, deepTarget.url]
+                        });
+                    }
+                } catch {}
+
+                // Even if not a known file host, we successfully bypassed and unlocked the destination URL!
+                const hostInfo = getFileHostInfo(unlockerTarget) || { name: 'Sub4Unlock (Unlocked)', color: '#ff4757' };
+                return res.json({
+                    success: true,
+                    url: unlockerTarget,
+                    host: hostInfo,
+                    method: 'unlocker-bypass',
+                    chain: [...result.chain, unlockerTarget]
+                });
+            }
+
             // Step 4: Deep scan - extract ALL URLs from HTML (including JSON data)
             // and recursively follow them to find file host links
             let sourceHostname = '';
@@ -606,7 +719,7 @@ module.exports = async function handler(req, res) {
             const allUrls = scanHtmlForAllUrls(result.html, sourceHostname);
 
             for (const candidateUrl of allUrls) {
-                const deepResult = await resolveUrlDeep(candidateUrl, 3, new Set([validatedUrl, result.finalUrl]));
+                const deepResult = await resolveUrlDeep(candidateUrl, 2, new Set([validatedUrl, result.finalUrl]));
                 if (deepResult) {
                     return res.json({
                         success: true,
@@ -616,6 +729,18 @@ module.exports = async function handler(req, res) {
                         chain: [...result.chain, candidateUrl, deepResult.url]
                     });
                 }
+            }
+
+            // If deep scan found external URLs but none was a file host, return the first valid external candidate
+            if (allUrls.length > 0) {
+                const primaryCandidate = allUrls[0];
+                return res.json({
+                    success: true,
+                    url: primaryCandidate,
+                    host: getFileHostInfo(primaryCandidate) || { name: 'Link Ditemukan', color: '#2196f3' },
+                    method: 'deep-scan-bypassed',
+                    chain: [...result.chain, primaryCandidate]
+                });
             }
         }
 
