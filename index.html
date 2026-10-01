@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="JZINJECTLINK - Ekstrak link download langsung dari safelink tanpa iklan. Dapatkan link MediaFire, Google Drive, dan lainnya secara instan.">
+    <title>JZINJECTLINK - Ekstrak Link Download Langsung</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Floating background elements -->
+    <div class="bg-decoration">
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+        <div class="bg-circle bg-circle-3"></div>
+        <div class="bg-grid"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <div class="logo-icon">
+                    <span class="logo-text">JZ</span>
+                </div>
+                <span>JZ<span class="logo-accent">INJECT</span>LINK</span>
+            </a>
+            <div class="nav-links">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#features" class="nav-link">Fitur</a>
+                <a href="#how-it-works" class="nav-link">Cara Kerja</a>
+                <a href="#supported" class="nav-link">Supported</a>
+                <a href="https://discord.gg/rWgevvub" target="_blank" rel="noopener" class="nav-discord-link" title="Gabung Server Discord">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+                    </svg>
+                    <span>Discord</span>
+                </a>
+            </div>
+
+            <!-- Mobile Controls -->
+            <div class="nav-mobile-controls">
+                <a href="https://discord.gg/rWgevvub" target="_blank" rel="noopener" class="mobile-discord-badge" title="Join Discord">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+                    </svg>
+                </a>
+                <button type="button" class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation menu">
+                    <span class="hamburger-bar"></span>
+                    <span class="hamburger-bar"></span>
+                    <span class="hamburger-bar"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu Drawer -->
+        <div class="mobile-nav-drawer hidden" id="mobile-nav-drawer">
+            <div class="mobile-nav-links">
+                <a href="#home" class="mobile-nav-link active">Home</a>
+                <a href="#features" class="mobile-nav-link">Fitur</a>
+                <a href="#how-it-works" class="mobile-nav-link">Cara Kerja</a>
+                <a href="#supported" class="mobile-nav-link">Supported</a>
+                <a href="https://discord.gg/rWgevvub" target="_blank" rel="noopener" class="mobile-nav-discord-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+                    </svg>
+                    <span>Gabung Discord Server</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                <span>100% Gratis & Tanpa Iklan</span>
+            </div>
+            <h1 class="hero-title">
+                Ekstrak Link Download
+                <span class="title-gradient">Langsung & Cepat</span>
+            </h1>
+            <p class="hero-subtitle">
+                Bypass safelink, safefile, dan URL shortener lainnya. Dapatkan link MediaFire,
+                Google Drive, dan file hosting lainnya secara instan tanpa ribet.
+            </p>
+
+            <!-- Main Input Card -->
+            <div class="inject-card" id="inject-card">
+                <div class="card-glow"></div>
+                <div class="card-inner">
+                    <div class="input-group">
+                        <div class="input-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                            </svg>
+                        </div>
+                        <input type="url" id="link-input" class="link-input"
+                            placeholder="Paste safelink URL di sini... (contoh: https://safefile.link/xxxxx)"
+                            autocomplete="off" spellcheck="false">
+                        <button id="clear-btn" class="clear-btn hidden" title="Hapus">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </button>
+                    </div>
+                    <button id="inject-btn" class="inject-btn">
+                        <span class="btn-text">Inject Link</span>
+                        <span class="btn-loader hidden">
+                            <svg class="spinner" width="20" height="20" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="3"
+                                    stroke-dasharray="31.4" stroke-linecap="round" />
+                            </svg>
+                        </span>
+                        <svg class="btn-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Robot Verification Box (Anti-bot Security) -->
+                <div class="captcha-container" id="captcha-container">
+                    <div class="captcha-box" id="captcha-box">
+                        <div class="captcha-left">
+                            <button type="button" class="captcha-checkbox" id="captcha-checkbox" role="checkbox" aria-checked="false" aria-label="Verifikasi Saya bukan robot">
+                                <span class="captcha-spinner hidden" id="captcha-spinner">
+                                    <svg class="spinner" width="16" height="16" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="31.4" stroke-linecap="round" />
+                                    </svg>
+                                </span>
+                                <span class="captcha-check-icon hidden" id="captcha-check-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="captcha-info">
+                                <span class="captcha-title" id="captcha-title">Saya bukan robot</span>
+                                <span class="captcha-subtitle" id="captcha-subtitle">Klik untuk verifikasi keamanan</span>
+                            </div>
+                        </div>
+                        <div class="captcha-badge">
+                            <div class="captcha-badge-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                    <path d="m9 12 2 2 4-4" />
+                                </svg>
+                            </div>
+                            <div class="captcha-badge-text">
+                                <span class="captcha-brand-name">JZ Shield</span>
+                                <span class="captcha-brand-sub">Privacy & Terms</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="captcha-warning hidden" id="captcha-warning">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        <span>Harap selesaikan verifikasi <strong>"Saya bukan robot"</strong> terlebih dahulu!</span>
+                    </div>
+                </div>
+
+                <!-- Result Area -->
+                <div id="result-area" class="result-area hidden">
+                    <div class="result-divider">
+                        <span>Hasil Ekstraksi</span>
+                    </div>
+
+                    <!-- Success Result -->
+                    <div id="result-success" class="result-content hidden">
+                        <div class="result-file-info">
+                            <div class="file-icon" id="file-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                </svg>
+                            </div>
+                            <div class="file-details">
+                                <span class="file-host" id="file-host">MediaFire</span>
+                                <span class="file-status">Link berhasil diekstrak!</span>
+                            </div>
+                        </div>
+                        <div class="result-link-box">
+                            <input type="text" id="result-link" class="result-link" readonly>
+                            <button id="copy-btn" class="copy-btn" title="Copy Link">
+                                <svg id="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                </svg>
+                                <svg id="check-icon" class="hidden" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="result-actions">
+                            <a id="open-link-btn" href="#" target="_blank" class="action-btn primary-action">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                    <polyline points="15 3 21 3 21 9" />
+                                    <line x1="10" y1="14" x2="21" y2="3" />
+                                </svg>
+                                Buka Link
+                            </a>
+                            <a href="https://discord.gg/rWgevvub" target="_blank" rel="noopener" class="action-btn discord-action" title="Join Discord">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+                                </svg>
+                                Join Discord
+                            </a>
+                            <button id="new-link-btn" class="action-btn secondary-action">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="1 4 1 10 7 10" />
+                                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                                </svg>
+                                Inject Lagi
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Error Result -->
+                    <div id="result-error" class="result-content result-error hidden">
+                        <div class="error-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="15" y1="9" x2="9" y2="15" />
+                                <line x1="9" y1="9" x2="15" y2="15" />
+                            </svg>
+                        </div>
+                        <p class="error-message" id="error-message">Link tidak valid atau tidak didukung.</p>
+                        <button id="retry-btn" class="action-btn secondary-action">Coba Lagi</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="stat-extracted">12,847</span>
+                    <span class="stat-label">Link Diekstrak</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">10+</span>
+                    <span class="stat-label">Platform Didukung</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">&lt;3s</span>
+                    <span class="stat-label">Waktu Proses</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-badge">Fitur Unggulan</span>
+                <h2 class="section-title">Kenapa Pilih JZINJECTLINK?</h2>
+                <p class="section-subtitle">Tools ekstrak link paling powerful dan mudah digunakan</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-1">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Super Cepat</h3>
+                    <p class="feature-desc">Proses ekstraksi link hanya membutuhkan waktu kurang dari 3 detik. Tanpa
+                        loading lama.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-2">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Aman & Private</h3>
+                    <p class="feature-desc">Tidak menyimpan data link apapun. Semua proses dilakukan di browser kamu.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-3">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Tanpa Iklan</h3>
+                    <p class="feature-desc">100% bebas iklan. Langsung ke link download tanpa popup atau redirect.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-4">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                            <line x1="8" y1="21" x2="16" y2="21" />
+                            <line x1="12" y1="17" x2="12" y2="21" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Multi Platform</h3>
+                    <p class="feature-desc">Bisa diakses dari HP, tablet, atau laptop. Responsive di semua perangkat.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works Section -->
+    <section class="how-section" id="how-it-works">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-badge">Panduan</span>
+                <h2 class="section-title">Cara Menggunakan</h2>
+                <p class="section-subtitle">Hanya 3 langkah mudah untuk mendapatkan link download</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3>Copy Link Safelink</h3>
+                        <p>Copy URL safelink/safefile yang mengandung link download kamu.</p>
+                    </div>
+                </div>
+                <div class="step-connector">
+                    <svg width="40" height="24" viewBox="0 0 40 24" fill="none">
+                        <path d="M0 12h36M28 4l8 8-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3>Paste & Inject</h3>
+                        <p>Paste link tersebut ke kolom input lalu klik tombol "Inject Link".</p>
+                    </div>
+                </div>
+                <div class="step-connector">
+                    <svg width="40" height="24" viewBox="0 0 40 24" fill="none">
+                        <path d="M0 12h36M28 4l8 8-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3>Download Langsung</h3>
+                        <p>Link asli akan muncul. Klik "Buka Link" untuk download langsung.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Supported Platforms -->
+    <section class="supported-section" id="supported">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-badge">Kompatibilitas</span>
+                <h2 class="section-title">Platform yang Didukung</h2>
+                <p class="section-subtitle">Mendukung berbagai safelink dan file hosting populer</p>
+            </div>
+            <div class="platforms-grid">
+                <div class="platform-group">
+                    <h3 class="platform-group-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                        </svg>
+                        Safelink/Shortener
+                    </h3>
+                    <div class="platform-tags">
+                        <span class="platform-tag">SafelinkU</span>
+                        <span class="platform-tag">SafeFile</span>
+                        <span class="platform-tag">Safelink Converter</span>
+                        <span class="platform-tag">Bit.ly</span>
+                        <span class="platform-tag">Ouo.io</span>
+                        <span class="platform-tag">Shorte.st</span>
+                        <span class="platform-tag">Adf.ly</span>
+                        <span class="platform-tag">Exe.io</span>
+                        <span class="platform-tag">GPLinks</span>
+                        <span class="platform-tag">DropLinks</span>
+                    </div>
+                </div>
+                <div class="platform-group">
+                    <h3 class="platform-group-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        File Hosting
+                    </h3>
+                    <div class="platform-tags">
+                        <span class="platform-tag tag-highlight">MediaFire</span>
+                        <span class="platform-tag tag-highlight">Google Drive</span>
+                        <span class="platform-tag tag-highlight">Mega.nz</span>
+                        <span class="platform-tag tag-highlight">Zippyshare</span>
+                        <span class="platform-tag tag-highlight">Krakenfiles</span>
+                        <span class="platform-tag tag-highlight">Pixeldrain</span>
+                        <span class="platform-tag tag-highlight">Gofile</span>
+                        <span class="platform-tag tag-highlight">Anonfiles</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="#" class="nav-logo">
+                        <div class="logo-icon">
+                            <span class="logo-text">JZ</span>
+                        </div>
+                        <span>JZ<span class="logo-accent">INJECT</span>LINK</span>
+                    </a>
+                    <p class="footer-desc">Tools gratis untuk mengekstrak link download dari berbagai safelink dan URL shortener.</p>
+                </div>
+                <div class="footer-discord-box">
+                    <div class="footer-discord-header">
+                        <div class="discord-badge-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="footer-discord-title">Komunitas Discord</span>
+                            <span class="footer-discord-sub">Request platform & diskusi</span>
+                        </div>
+                    </div>
+                    <a href="https://discord.gg/rWgevvub" target="_blank" rel="noopener" class="footer-discord-btn">
+                        <span>Join Server Discord</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 JZINJECTLINK. All rights reserved.</p>
+                <p class="footer-note">Dibuat dengan ❤️ untuk komunitas Indonesia</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Security Alert Modal Popup -->
+    <div id="security-alert-modal" class="alert-modal-backdrop hidden" role="dialog" aria-modal="true">
+        <div class="alert-modal">
+            <button type="button" class="alert-modal-close" id="alert-modal-close" aria-label="Tutup">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="alert-modal-icon">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+            <h3 class="alert-modal-title">Verifikasi Anti-Robot Diperlukan!</h3>
+            <p class="alert-modal-desc">
+                Kamu belum mencentang verifikasi keamanan. Silakan klik kotak <strong>"Saya bukan robot"</strong> terlebih dahulu sebelum meng-convert / meng-inject link!
+            </p>
+            <div class="alert-modal-actions">
+                <button type="button" id="alert-modal-btn" class="alert-modal-btn">
+                    <span>Centang Verifikasi Sekarang</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating AI Chat Widget (Gemini / GPT) -->
+    <div class="ai-chat-widget" id="ai-chat-widget">
+        <!-- Floating Trigger Button -->
+        <button type="button" class="ai-chat-toggle" id="ai-chat-toggle" aria-label="Buka Chat AI">
+            <span class="ai-toggle-icon" id="ai-toggle-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/>
+                </svg>
+            </span>
+            <span class="ai-toggle-close hidden" id="ai-toggle-close">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </span>
+            <span class="ai-toggle-badge">AI</span>
+        </button>
+
+        <!-- Chat Window Panel -->
+        <div class="ai-chat-panel hidden" id="ai-chat-panel">
+            <!-- Header -->
+            <div class="ai-chat-header">
+                <div class="ai-header-info">
+                    <div class="ai-avatar">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/>
+                        </svg>
+                        <span class="ai-status-dot"></span>
+                    </div>
+                    <div>
+                        <h4 class="ai-name">JZ AI Assistant</h4>
+                        <span class="ai-model-tag" id="ai-active-model-tag">Google Gemini</span>
+                    </div>
+                </div>
+                <div class="ai-header-actions">
+                    <button type="button" class="ai-btn-icon" id="ai-settings-btn" title="Pengaturan AI (Gemini / GPT)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                    <button type="button" class="ai-btn-icon" id="ai-close-btn" title="Tutup Chat">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Settings Panel (Gemini / GPT switch) -->
+            <div class="ai-settings-panel hidden" id="ai-settings-panel">
+                <div class="ai-settings-header">
+                    <h5>Pengaturan Model AI</h5>
+                    <button type="button" class="ai-settings-close" id="ai-settings-close">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="ai-settings-body">
+                    <label class="ai-setting-label">Pilih Provider:</label>
+                    <div class="ai-provider-toggle">
+                        <button type="button" class="ai-provider-btn active" id="btn-provider-gemini" data-provider="gemini">Google Gemini</button>
+                        <button type="button" class="ai-provider-btn" id="btn-provider-openai" data-provider="openai">OpenAI (GPT)</button>
+                    </div>
+
+                    <div id="ai-gemini-config">
+                        <label class="ai-setting-label" for="ai-gemini-key">Gemini API Key:</label>
+                        <input type="password" id="ai-gemini-key" class="ai-setting-input" placeholder="Masukkan Gemini API Key..." autocomplete="off">
+                        <span class="ai-setting-hint">Dapatkan gratis di <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Google AI Studio</a></span>
+                    </div>
+
+                    <div id="ai-openai-config" class="hidden">
+                        <label class="ai-setting-label" for="ai-openai-key">OpenAI API Key:</label>
+                        <input type="password" id="ai-openai-key" class="ai-setting-input" placeholder="sk-..." autocomplete="off">
+                        <span class="ai-setting-hint">Dapatkan di <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">OpenAI Platform</a></span>
+                    </div>
+
+                    <div class="ai-settings-actions">
+                        <button type="button" class="ai-save-settings-btn" id="ai-save-settings-btn">Simpan Pengaturan</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="ai-messages" id="ai-messages">
+                <div class="ai-msg ai-msg-bot">
+                    <div class="ai-msg-avatar">JZ</div>
+                    <div class="ai-msg-bubble">
+                        Halo! 👋 Saya <strong>JZ AI Assistant</strong>. Ada yang bisa saya bantu seputar ekstraksi link, bypass safelink/safefile, atau pertanyaan lainnya?
+                    </div>
+                </div>
+                <!-- Quick suggestions -->
+                <div class="ai-suggestions" id="ai-suggestions">
+                    <button type="button" class="ai-chip" data-query="Bagaimana cara kerja bypass safelink di sini?">Cara kerja bypass?</button>
+                    <button type="button" class="ai-chip" data-query="Platform apa saja yang didukung?">Platform apa saja?</button>
+                    <button type="button" class="ai-chip" data-query="Bagaimana cara setting API Key Gemini atau GPT?">Cara setting API Key?</button>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="ai-input-bar">
+                <input type="text" id="ai-input" class="ai-input" placeholder="Ketik pertanyaan untuk JZ AI..." autocomplete="off">
+                <button type="button" id="ai-send-btn" class="ai-send-btn" title="Kirim Pesan">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

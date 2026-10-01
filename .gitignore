@@ -1,0 +1,26 @@
+# Image and media files (agar foto tidak ikut ter-push)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.bmp
+*.ico
+*.tiff
+*.svgz
+
+# Specific image files
+jz_logo.jpg
+
+# Environment & credentials
+.env
+.env.local
+*.log
+
+# OS & Editor generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+.vscode/
+.idea/
+*.swp
